@@ -1,3 +1,0 @@
-// en as fallback — detect last after all accented languages
-// (already covered by making en LAST in LANG_MAP array)
-// Tests updated below:
