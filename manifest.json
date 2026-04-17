@@ -1,0 +1,53 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "1.0.0",
+  "default_locale": "en",
+  "author": "Language Reactor Team",
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "background": {
+    "scripts": ["settings.js", "background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://*.youtu.be/*",
+        "*://*.netflix.com/*",
+        "*://*.udemy.com/*",
+        "*://*.babbel.com/*"
+      ],
+      "js": ["settings.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icons/icon.svg",
+      "96": "icons/icon.svg"
+    },
+    "default_title": "__MSG_extensionName__"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "*://*.youtu.be/*",
+    "*://*.netflix.com/*",
+    "*://*.udemy.com/*",
+    "*://*.babbel.com/*",
+    "https://api.mymemory.translated.net/*"
+  ]
+}

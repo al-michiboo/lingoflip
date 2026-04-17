@@ -1,0 +1,7 @@
+{
+  "extensionName": { "message": "Language Reactor", "description": "Name of the extension." },
+  "extensionDescription": {
+    "message": "Learn languages from streaming videos with dual subtitles, word lookup, and vocabulary building.",
+    "description": "Extension description."
+  }
+}

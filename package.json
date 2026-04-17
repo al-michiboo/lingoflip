@@ -1,0 +1,12 @@
+{
+  "name": "language-reactor",
+  "version": "1.0.0",
+  "description": "Firefox extension — dual subtitles, word lookup, vocabulary builder for streaming videos",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
