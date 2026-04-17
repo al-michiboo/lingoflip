@@ -4,13 +4,16 @@
   "description": "__MSG_extensionDescription__",
   "version": "1.0.0",
   "default_locale": "en",
-  "author": "Language Reactor Team",
+  "author": "LingoFlip Team",
   "icons": {
     "48": "icons/icon.svg",
     "96": "icons/icon.svg"
   },
   "background": {
-    "scripts": ["settings.js", "background.js"],
+    "scripts": [
+      "settings.js",
+      "background.js"
+    ],
     "persistent": false
   },
   "content_scripts": [
@@ -22,8 +25,13 @@
         "*://*.udemy.com/*",
         "*://*.babbel.com/*"
       ],
-      "js": ["settings.js", "content.js"],
-      "css": ["content.css"],
+      "js": [
+        "settings.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
       "run_at": "document_end",
       "all_frames": true
     }

@@ -1,7 +1,7 @@
 {
-  "name": "language-reactor",
+  "name": "lingoflip",
   "version": "1.0.0",
-  "description": "Firefox extension — dual subtitles, word lookup, vocabulary builder for streaming videos",
+  "description": "Learn languages from streaming videos \u2014 dual subtitles, word lookup, and vocabulary builder",
   "scripts": {
     "test": "jest --coverage",
     "test:watch": "jest --watch"

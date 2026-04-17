@@ -1,12 +1,12 @@
 /* ================================================
-   Language Reactor — Shared Settings Helper
+   LingoFlip — Shared Settings Helper
    ================================================ */
 
 /* eslint-disable no-unused-vars */
 
-const LR_SETTINGS_KEY = 'lr_settings';
-const LR_VOCAB_KEY   = 'lr_vocabulary';
-const LR_CACHE_KEY   = 'lr_cache';
+const LG_SETTINGS_KEY = 'lr_settings';
+const LG_VOCAB_KEY   = 'lr_vocabulary';
+const LG_CACHE_KEY   = 'lr_cache';
 
 // ─── Defaults ────────────────────────────────────────────────────────────────
 const DEFAULT_SETTINGS = {
@@ -26,8 +26,8 @@ const DEFAULT_SETTINGS = {
 
 // ─── Load ────────────────────────────────────────────────────────────────────
 function lrLoadSettings(callback) {
-  browser.storage.local.get(LR_SETTINGS_KEY, (result) => {
-    const raw = result[LR_SETTINGS_KEY];
+  browser.storage.local.get(LG_SETTINGS_KEY, (result) => {
+    const raw = result[LG_SETTINGS_KEY];
     // Only pick known fields from stored settings (drop unknown keys)
     const known = {};
     if (raw) {
@@ -41,20 +41,20 @@ function lrLoadSettings(callback) {
 }
 
 function lrSaveSettings(settings, callback) {
-  browser.storage.local.set({ [LR_SETTINGS_KEY]: settings }, () => {
+  browser.storage.local.set({ [LG_SETTINGS_KEY]: settings }, () => {
     if (callback) callback();
   });
 }
 
 // ─── Vocabulary CRUD ─────────────────────────────────────────────────────────
 function lrLoadVocab(callback) {
-  browser.storage.local.get(LR_VOCAB_KEY, (result) => {
-    callback(result[LR_VOCAB_KEY] || []);
+  browser.storage.local.get(LG_VOCAB_KEY, (result) => {
+    callback(result[LG_VOCAB_KEY] || []);
   });
 }
 
 function lrSaveVocab(vocab, callback) {
-  browser.storage.local.set({ [LR_VOCAB_KEY]: vocab }, () => {
+  browser.storage.local.set({ [LG_VOCAB_KEY]: vocab }, () => {
     if (callback) callback();
   });
 }
@@ -80,16 +80,16 @@ function lrClearVocab(callback) {
 
 // ─── Translation Cache ────────────────────────────────────────────────────────
 function lrLoadCache(callback) {
-  browser.storage.local.get(LR_CACHE_KEY, (result) => {
-    callback(result[LR_CACHE_KEY] || {});
+  browser.storage.local.get(LG_CACHE_KEY, (result) => {
+    callback(result[LG_CACHE_KEY] || {});
   });
 }
 
 function lrSaveCache(cache, callback) {
   // Merge with existing cache to avoid overwriting unrelated entries
-  browser.storage.local.get(LR_CACHE_KEY, (result) => {
-    const existing = result[LR_CACHE_KEY] || {};
-    browser.storage.local.set({ [LR_CACHE_KEY]: Object.assign({}, existing, cache) }, () => {
+  browser.storage.local.get(LG_CACHE_KEY, (result) => {
+    const existing = result[LG_CACHE_KEY] || {};
+    browser.storage.local.set({ [LG_CACHE_KEY]: Object.assign({}, existing, cache) }, () => {
       if (callback) callback();
     });
   });
@@ -142,5 +142,5 @@ module.exports = {
   lrTranslate,
   lrExportVocabCSV, lrGenId,
   DEFAULT_SETTINGS,
-  LR_SETTINGS_KEY, LR_VOCAB_KEY, LR_CACHE_KEY
+  LG_SETTINGS_KEY, LG_VOCAB_KEY, LG_CACHE_KEY
 };

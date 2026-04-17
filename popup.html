@@ -5,18 +5,18 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { width: 280px; background: #111827; color: #e0e0e0; font-family: system-ui, -apple-system, sans-serif; }
-    .lr-popup { padding: 14px; }
-    .lr-popup-title { font-size: 15px; font-weight: 700; color: #7dd3fc; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-    .lr-status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; }
-    .lr-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .lr-dot-on  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
-    .lr-dot-off { background: #6b7280; }
-    .lr-lang-row { display: flex; justify-content: space-between; background: rgba(255,255,255,0.05); border-radius: 7px; padding: 8px 10px; margin-bottom: 10px; font-size: 12px; }
-    .lr-lang-label { color: #9ca3af; }
-    .lr-lang-val   { color: #86efac; font-weight: 600; }
-    .lr-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 10px 0; }
-    .lr-links { display: flex; flex-direction: column; gap: 5px; }
-    .lr-link-btn {
+    .lg-popup { padding: 14px; }
+    .lg-popup-title { font-size: 15px; font-weight: 700; color: #7dd3fc; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .lg-status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; }
+    .lg-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .lg-dot-on  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .lg-dot-off { background: #6b7280; }
+    .lg-lang-row { display: flex; justify-content: space-between; background: rgba(255,255,255,0.05); border-radius: 7px; padding: 8px 10px; margin-bottom: 10px; font-size: 12px; }
+    .lg-lang-label { color: #9ca3af; }
+    .lg-lang-val   { color: #86efac; font-weight: 600; }
+    .lg-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 10px 0; }
+    .lg-links { display: flex; flex-direction: column; gap: 5px; }
+    .lg-link-btn {
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
       color: #e5e7eb;
@@ -29,37 +29,37 @@
       font-family: system-ui, sans-serif;
       transition: background 0.15s;
     }
-    .lr-link-btn:hover { background: rgba(255,255,255,0.16); }
-    .lr-footer { font-size: 10px; color: #4b5563; text-align: center; margin-top: 10px; }
+    .lg-link-btn:hover { background: rgba(255,255,255,0.16); }
+    .lg-footer { font-size: 10px; color: #4b5563; text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <div class="lr-popup">
-    <div class="lr-popup-title">🌐 Language Reactor</div>
+  <div class="lg-popup">
+    <div class="lg-popup-title">🌐 LingoFlip</div>
 
-    <div class="lr-status">
-      <div class="lr-dot lr-dot-on" id="lr-status-dot"></div>
-      <span id="lr-status-text">Active on this page</span>
+    <div class="lg-status">
+      <div class="lg-dot lg-dot-on" id="lg-status-dot"></div>
+      <span id="lg-status-text">Active on this page</span>
     </div>
 
-    <div class="lr-lang-row">
-      <span class="lr-lang-label">Learning (L2)</span>
-      <span class="lr-lang-val" id="lr-l2">Spanish</span>
+    <div class="lg-lang-row">
+      <span class="lg-lang-label">Learning (L2)</span>
+      <span class="lg-lang-val" id="lg-l2">Spanish</span>
     </div>
-    <div class="lr-lang-row">
-      <span class="lr-lang-label">Native (L1)</span>
-      <span class="lr-lang-val" id="lr-l1">English</span>
-    </div>
-
-    <hr class="lr-divider">
-
-    <div class="lr-links">
-      <button class="lr-link-btn" id="lr-btn-vocab">📚 Vocabulary</button>
-      <button class="lr-link-btn" id="lr-btn-settings">⚙️ Settings</button>
-      <button class="lr-link-btn" id="lr-btn-toggle" id="lr-btn-toggle">⏸ Pause Extension</button>
+    <div class="lg-lang-row">
+      <span class="lg-lang-label">Native (L1)</span>
+      <span class="lg-lang-val" id="lg-l1">English</span>
     </div>
 
-    <div class="lr-footer">Language Reactor v1.0.0</div>
+    <hr class="lg-divider">
+
+    <div class="lg-links">
+      <button class="lg-link-btn" id="lg-btn-vocab">📚 Vocabulary</button>
+      <button class="lg-link-btn" id="lg-btn-settings">⚙️ Settings</button>
+      <button class="lg-link-btn" id="lg-btn-toggle" id="lg-btn-toggle">⏸ Pause Extension</button>
+    </div>
+
+    <div class="lg-footer">LingoFlip v1.0.0</div>
   </div>
 
   <script src="popup.js"></script>

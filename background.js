@@ -1,27 +1,27 @@
 /* ================================================
-   Language Reactor — Background Service Worker
+   LingoFlip — Background Service Worker
    ================================================ */
 
 // ─── Context Menu Setup ──────────────────────────────────────────────────────
 browser.runtime.onInstalled.addListener(() => {
   // Primary context menu
   browser.contextMenus.create({
-    id: 'lr-lookup',
-    title: 'Look up "%s" with Language Reactor',
+    id: 'lg-lookup',
+    title: 'Look up "%s" with LingoFlip',
     contexts: ['selection']
   });
 
   // Vocab panel shortcut
   browser.contextMenus.create({
-    id: 'lr-open-vocab',
+    id: 'lg-open-vocab',
     title: 'Open Vocabulary Panel',
     contexts: ['page']
   });
 
   // Settings shortcut
   browser.contextMenus.create({
-    id: 'lr-open-settings',
-    title: 'Open Language Reactor Settings',
+    id: 'lg-open-settings',
+    title: 'Open LingoFlip Settings',
     contexts: ['page']
   });
 });
@@ -29,21 +29,21 @@ browser.runtime.onInstalled.addListener(() => {
 // ─── Context Menu Handlers ────────────────────────────────────────────────────
 browser.contextMenus.onClicked.addListener((info, tab) => {
   switch (info.menuItemId) {
-    case 'lr-lookup': {
+    case 'lg-lookup': {
       const selected = info.selectionText;
       if (!selected) return;
       // Inject a lookup popup into the active tab
       browser.tabs.sendMessage(tab.id, {
-        type: 'LR_LOOKUP',
+        type: 'LG_LOOKUP',
         text: selected.trim()
       });
       break;
     }
-    case 'lr-open-vocab':
-      browser.tabs.sendMessage(tab.id, { type: 'LR_TOGGLE_VOCAB' });
+    case 'lg-open-vocab':
+      browser.tabs.sendMessage(tab.id, { type: 'LG_TOGGLE_VOCAB' });
       break;
-    case 'lr-open-settings':
-      browser.tabs.sendMessage(tab.id, { type: 'LR_OPEN_SETTINGS' });
+    case 'lg-open-settings':
+      browser.tabs.sendMessage(tab.id, { type: 'LG_OPEN_SETTINGS' });
       break;
   }
 });
@@ -53,35 +53,35 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 // to avoid CORS issues — uses browser.runtime.sendMessage pattern
 
 browser.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  if (msg.type === 'LR_TRANSLATE') {
+  if (msg.type === 'LG_TRANSLATE') {
     lrTranslate(msg.text, msg.fromLang, msg.toLang)
       .then(result => sendResponse({ ok: true, result }))
       .catch(err => sendResponse({ ok: false, error: err.message }));
     return true; // async response
   }
 
-  if (msg.type === 'LR_GET_SETTINGS') {
+  if (msg.type === 'LG_GET_SETTINGS') {
     browser.storage.local.get('lr_settings', (result) => {
       sendResponse(result.lr_settings || {});
     });
     return true;
   }
 
-  if (msg.type === 'LR_SAVE_SETTINGS') {
+  if (msg.type === 'LG_SAVE_SETTINGS') {
     browser.storage.local.set({ lr_settings: msg.settings }, () => {
       sendResponse({ ok: true });
     });
     return true;
   }
 
-  if (msg.type === 'LR_GET_VOCAB') {
+  if (msg.type === 'LG_GET_VOCAB') {
     browser.storage.local.get('lr_vocabulary', (result) => {
       sendResponse(result.lr_vocabulary || []);
     });
     return true;
   }
 
-  if (msg.type === 'LR_ADD_WORD') {
+  if (msg.type === 'LG_ADD_WORD') {
     const entry = {
       id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
       word: msg.entry.word,
@@ -101,7 +101,7 @@ browser.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
 
-  if (msg.type === 'LR_REMOVE_WORD') {
+  if (msg.type === 'LG_REMOVE_WORD') {
     browser.storage.local.get('lr_vocabulary', (result) => {
       const vocab = result.lr_vocabulary || [];
       const filtered = vocab.filter(w => w.id !== msg.id);
@@ -112,14 +112,14 @@ browser.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
 
-  if (msg.type === 'LR_CLEAR_VOCAB') {
+  if (msg.type === 'LG_CLEAR_VOCAB') {
     browser.storage.local.set({ lr_vocabulary: [] }, () => {
       sendResponse({ ok: true });
     });
     return true;
   }
 
-  if (msg.type === 'LR_EXPORT_CSV') {
+  if (msg.type === 'LG_EXPORT_CSV') {
     browser.storage.local.get('lr_vocabulary', (result) => {
       const vocab = result.lr_vocabulary || [];
       const header = 'Word,Translation,Context,Video URL,Timestamp,Date\n';
@@ -134,21 +134,21 @@ browser.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
 
-  if (msg.type === 'LR_GET_CACHE') {
+  if (msg.type === 'LG_GET_CACHE') {
     browser.storage.local.get('lr_cache', (result) => {
       sendResponse(result.lr_cache || {});
     });
     return true;
   }
 
-  if (msg.type === 'LR_SET_CACHE') {
+  if (msg.type === 'LG_SET_CACHE') {
     browser.storage.local.set({ lr_cache: msg.cache }, () => {
       sendResponse({ ok: true });
     });
     return true;
   }
 
-  if (msg.type === 'LR_CACHED_TRANSLATE') {
+  if (msg.type === 'LG_CACHED_TRANSLATE') {
     // Try cache first, then API
     const cacheKey = `${msg.fromLang}|${msg.toLang}|${msg.text}`;
     browser.storage.local.get('lr_cache', async (result) => {

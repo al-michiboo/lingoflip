@@ -1,5 +1,5 @@
 /* ================================================
-   Language Reactor — Content Script
+   LingoFlip — Content Script
    Handles subtitle detection, display, word clicks,
    translation popup, and vocabulary panel.
    ================================================ */
@@ -21,7 +21,7 @@
 
   // ─── Init ───────────────────────────────────────────────────────────────────
   async function init() {
-    const stored = await browser.runtime.sendMessage({ type: 'LR_GET_SETTINGS' });
+    const stored = await browser.runtime.sendMessage({ type: 'LG_GET_SETTINGS' });
     settings = Object.assign({
       L1: 'en', L2: 'es', fontSize: 20,
       fontColor: '#FFFFFF', bgOpacity: 0.75,
@@ -165,12 +165,12 @@
     if (isL2) {
       currentL2Text = text;
       // Show L2 on top, L1 below
-      subPanel.querySelector('.lr-sub-l2').textContent = text;
-      subPanel.querySelector('.lr-sub-l1').textContent = currentL1Text;
+      subPanel.querySelector('.lg-sub-l2').textContent = text;
+      subPanel.querySelector('.lg-sub-l1').textContent = currentL1Text;
     } else {
       currentL1Text = text;
-      subPanel.querySelector('.lr-sub-l1').textContent = text;
-      subPanel.querySelector('.lr-sub-l2').textContent = currentL2Text;
+      subPanel.querySelector('.lg-sub-l1').textContent = text;
+      subPanel.querySelector('.lg-sub-l2').textContent = currentL2Text;
     }
   }
 
@@ -208,22 +208,22 @@
     if (subPanel) { subPanel.remove(); subPanel = null; }
 
     subPanel = document.createElement('div');
-    subPanel.id = 'lr-subtitle-panel';
-    subPanel.className = `lr-position-${settings.position}`;
+    subPanel.id = 'lg-subtitle-panel';
+    subPanel.className = `lg-position-${settings.position}`;
 
     subPanel.innerHTML = `
-      <div class="lr-sub-header" id="lr-sub-header">
-        <span class="lr-sub-label">L2</span>
-        <span class="lr-sub-l2 lr-sub-text"></span>
+      <div class="lg-sub-header" id="lg-sub-header">
+        <span class="lg-sub-label">L2</span>
+        <span class="lg-sub-l2 lg-sub-text"></span>
       </div>
-      <div class="lr-sub-body">
-        <span class="lr-sub-label">L1</span>
-        <span class="lr-sub-l1 lr-sub-text"></span>
+      <div class="lg-sub-body">
+        <span class="lg-sub-label">L1</span>
+        <span class="lg-sub-l1 lg-sub-text"></span>
       </div>
-      <div class="lr-sub-controls">
-        <button class="lr-btn lr-btn-sm" id="lr-toggle-vocab" title="Vocabulary">📚</button>
-        <button class="lr-btn lr-btn-sm" id="lr-open-settings-btn" title="Settings">⚙️</button>
-        <button class="lr-btn lr-btn-sm" id="lr-collapse-panel" title="Collapse">−</button>
+      <div class="lg-sub-controls">
+        <button class="lg-btn lg-btn-sm" id="lg-toggle-vocab" title="Vocabulary">📚</button>
+        <button class="lg-btn lg-btn-sm" id="lg-open-settings-btn" title="Settings">⚙️</button>
+        <button class="lg-btn lg-btn-sm" id="lg-collapse-panel" title="Collapse">−</button>
       </div>
     `;
 
@@ -231,13 +231,13 @@
     document.body.appendChild(subPanel);
 
     // Collapse button
-    subPanel.querySelector('#lr-collapse-panel').addEventListener('click', (e) => {
+    subPanel.querySelector('#lg-collapse-panel').addEventListener('click', (e) => {
       e.stopPropagation();
-      subPanel.classList.toggle('lr-collapsed');
+      subPanel.classList.toggle('lg-collapsed');
     });
 
     // Header drag
-    const header = subPanel.querySelector('#lr-sub-header');
+    const header = subPanel.querySelector('#lg-sub-header');
     header.addEventListener('mousedown', (e) => {
       if (e.target.tagName === 'BUTTON') return;
       panelDrag.active = true;
@@ -263,13 +263,13 @@
     });
 
     // Vocab toggle button
-    subPanel.querySelector('#lr-toggle-vocab').addEventListener('click', (e) => {
+    subPanel.querySelector('#lg-toggle-vocab').addEventListener('click', (e) => {
       e.stopPropagation();
       toggleVocabPanel();
     });
 
     // Settings button
-    subPanel.querySelector('#lr-open-settings-btn').addEventListener('click', (e) => {
+    subPanel.querySelector('#lg-open-settings-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       toggleSettingsPanel();
     });
@@ -280,50 +280,50 @@
     const size  = settings.fontSize  || 20;
     const color = settings.fontColor || '#FFFFFF';
     const alpha = settings.bgOpacity ?? 0.75;
-    panel.querySelectorAll('.lr-sub-text').forEach(el => {
+    panel.querySelectorAll('.lg-sub-text').forEach(el => {
       el.style.fontSize   = size + 'px';
       el.style.color      = color;
     });
     const bgColor = `rgba(0,0,0,${alpha})`;
-    panel.style.setProperty('--lr-bg', bgColor);
+    panel.style.setProperty('--lg-bg', bgColor);
   }
 
   // ─── Vocabulary Panel ───────────────────────────────────────────────────────
   function buildVocabPanel() {
     vocabPanel = document.createElement('div');
-    vocabPanel.id = 'lr-vocab-panel';
-    vocabPanel.className = 'lr-hidden';
+    vocabPanel.id = 'lg-vocab-panel';
+    vocabPanel.className = 'lg-hidden';
     vocabPanel.innerHTML = `
-      <div class="lr-panel-header">
-        <span>📚 Vocabulary <span id="lr-vocab-count" class="lr-badge">0</span></span>
-        <div class="lr-panel-actions">
-          <button class="lr-btn" id="lr-export-csv">Export CSV</button>
-          <button class="lr-btn lr-btn-danger" id="lr-clear-vocab">Clear All</button>
-          <button class="lr-btn lr-btn-sm" id="lr-close-vocab">✕</button>
+      <div class="lg-panel-header">
+        <span>📚 Vocabulary <span id="lg-vocab-count" class="lg-badge">0</span></span>
+        <div class="lg-panel-actions">
+          <button class="lg-btn" id="lg-export-csv">Export CSV</button>
+          <button class="lg-btn lg-btn-danger" id="lg-clear-vocab">Clear All</button>
+          <button class="lg-btn lg-btn-sm" id="lg-close-vocab">✕</button>
         </div>
       </div>
-      <div id="lr-vocab-list"></div>
+      <div id="lg-vocab-list"></div>
     `;
     document.body.appendChild(vocabPanel);
 
-    vocabPanel.querySelector('#lr-close-vocab').addEventListener('click', () => {
-      vocabPanel.classList.add('lr-hidden');
+    vocabPanel.querySelector('#lg-close-vocab').addEventListener('click', () => {
+      vocabPanel.classList.add('lg-hidden');
     });
 
-    vocabPanel.querySelector('#lr-export-csv').addEventListener('click', async () => {
-      const resp = await browser.runtime.sendMessage({ type: 'LR_EXPORT_CSV' });
+    vocabPanel.querySelector('#lg-export-csv').addEventListener('click', async () => {
+      const resp = await browser.runtime.sendMessage({ type: 'LG_EXPORT_CSV' });
       if (resp.ok && resp.url) {
         const a = document.createElement('a');
         a.href = resp.url;
-        a.download = `language-reactor-vocab-${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = `lingoflip-vocab-${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
         URL.revokeObjectURL(resp.url);
       }
     });
 
-    vocabPanel.querySelector('#lr-clear-vocab').addEventListener('click', async () => {
+    vocabPanel.querySelector('#lg-clear-vocab').addEventListener('click', async () => {
       if (confirm('Clear all vocabulary?')) {
-        await browser.runtime.sendMessage({ type: 'LR_CLEAR_VOCAB' });
+        await browser.runtime.sendMessage({ type: 'LG_CLEAR_VOCAB' });
         renderVocab([]);
       }
     });
@@ -332,37 +332,37 @@
   }
 
   async function loadVocab() {
-    const vocab = await browser.runtime.sendMessage({ type: 'LR_GET_VOCAB' });
+    const vocab = await browser.runtime.sendMessage({ type: 'LG_GET_VOCAB' });
     renderVocab(Array.isArray(vocab) ? vocab : []);
   }
 
   function renderVocab(vocab) {
-    const list = document.getElementById('lr-vocab-list');
-    const count = document.getElementById('lr-vocab-count');
+    const list = document.getElementById('lg-vocab-list');
+    const count = document.getElementById('lg-vocab-count');
     if (!list) return;
     count.textContent = vocab.length;
     if (vocab.length === 0) {
-      list.innerHTML = '<p class="lr-empty">No words saved yet. Click any word in subtitles to add!</p>';
+      list.innerHTML = '<p class="lg-empty">No words saved yet. Click any word in subtitles to add!</p>';
       return;
     }
     list.innerHTML = vocab.map(w => `
-      <div class="lr-vocab-item" data-id="${w.id}">
-        <div class="lr-vocab-word">${escHtml(w.word)}</div>
-        <div class="lr-vocab-translation">${escHtml(w.translation)}</div>
-        ${w.sentence ? `<div class="lr-vocab-sentence">"${escHtml(w.sentence)}"</div>` : ''}
-        <div class="lr-vocab-meta">
+      <div class="lg-vocab-item" data-id="${w.id}">
+        <div class="lg-vocab-word">${escHtml(w.word)}</div>
+        <div class="lg-vocab-translation">${escHtml(w.translation)}</div>
+        ${w.sentence ? `<div class="lg-vocab-sentence">"${escHtml(w.sentence)}"</div>` : ''}
+        <div class="lg-vocab-meta">
           ${w.videoUrl ? `<a href="${escHtml(w.videoUrl)}" target="_blank">Video ↗</a>` : ''}
           <span>${w.date || ''}</span>
-          <button class="lr-btn lr-btn-danger lr-btn-sm lr-delete-word" data-id="${w.id}">Delete</button>
+          <button class="lg-btn lg-btn-danger lg-btn-sm lg-delete-word" data-id="${w.id}">Delete</button>
         </div>
       </div>
     `).join('');
 
-    list.querySelectorAll('.lr-delete-word').forEach(btn => {
+    list.querySelectorAll('.lg-delete-word').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.dataset.id;
-        await browser.runtime.sendMessage({ type: 'LR_REMOVE_WORD', id });
-        const vocab = await browser.runtime.sendMessage({ type: 'LR_GET_VOCAB' });
+        await browser.runtime.sendMessage({ type: 'LG_REMOVE_WORD', id });
+        const vocab = await browser.runtime.sendMessage({ type: 'LG_GET_VOCAB' });
         renderVocab(Array.isArray(vocab) ? vocab : []);
       });
     });
@@ -370,29 +370,29 @@
 
   function toggleVocabPanel() {
     if (!vocabPanel) return;
-    vocabPanel.classList.toggle('lr-hidden');
-    if (!vocabPanel.classList.contains('lr-hidden')) loadVocab();
+    vocabPanel.classList.toggle('lg-hidden');
+    if (!vocabPanel.classList.contains('lg-hidden')) loadVocab();
   }
 
   // ─── Translation Popup ──────────────────────────────────────────────────────
   function buildTransPopup() {
     transPopup = document.createElement('div');
-    transPopup.id = 'lr-trans-popup';
-    transPopup.className = 'lr-hidden';
+    transPopup.id = 'lg-trans-popup';
+    transPopup.className = 'lg-hidden';
     transPopup.innerHTML = `
-      <div class="lr-popup-word" id="lr-popup-word"></div>
-      <div class="lr-popup-loading" id="lr-popup-loading">Translating...</div>
-      <div class="lr-popup-translation" id="lr-popup-translation"></div>
-      <div class="lr-popup-context" id="lr-popup-context"></div>
-      <div class="lr-popup-actions">
-        <button class="lr-btn" id="lr-save-word">💾 Save Word</button>
-        <button class="lr-btn lr-btn-sm" id="lr-close-popup">✕</button>
+      <div class="lg-popup-word" id="lg-popup-word"></div>
+      <div class="lg-popup-loading" id="lg-popup-loading">Translating...</div>
+      <div class="lg-popup-translation" id="lg-popup-translation"></div>
+      <div class="lg-popup-context" id="lg-popup-context"></div>
+      <div class="lg-popup-actions">
+        <button class="lg-btn" id="lg-save-word">💾 Save Word</button>
+        <button class="lg-btn lg-btn-sm" id="lg-close-popup">✕</button>
       </div>
     `;
     document.body.appendChild(transPopup);
 
-    transPopup.querySelector('#lr-close-popup').addEventListener('click', closeTransPopup);
-    transPopup.querySelector('#lr-save-word').addEventListener('click', saveCurrentWord);
+    transPopup.querySelector('#lg-close-popup').addEventListener('click', closeTransPopup);
+    transPopup.querySelector('#lg-save-word').addEventListener('click', saveCurrentWord);
   }
 
   let popupState = { word: '', translation: '', sentence: '', timestamp: '' };
@@ -400,10 +400,10 @@
   async function showTransPopup(word, sentence, x, y) {
     if (!transPopup) return;
     popupState = { word, sentence, timestamp: getVideoTimestamp(), translation: '' };
-    transPopup.querySelector('#lr-popup-word').textContent = word;
-    transPopup.querySelector('#lr-popup-translation').textContent = '';
-    transPopup.querySelector('#lr-popup-loading').style.display = '';
-    transPopup.querySelector('#lr-popup-context').textContent = sentence ? `"${sentence}"` : '';
+    transPopup.querySelector('#lg-popup-word').textContent = word;
+    transPopup.querySelector('#lg-popup-translation').textContent = '';
+    transPopup.querySelector('#lg-popup-loading').style.display = '';
+    transPopup.querySelector('#lg-popup-context').textContent = sentence ? `"${sentence}"` : '';
 
     // Position popup
     const vw = window.innerWidth;
@@ -413,29 +413,29 @@
     transPopup.style.left = left + 'px';
     transPopup.style.top  = top  + 'px';
     transPopup.style.right = 'auto';
-    transPopup.classList.remove('lr-hidden');
+    transPopup.classList.remove('lg-hidden');
 
     // Translate L2 → L1
     const L2 = detectLanguage(word);
     const resp = await browser.runtime.sendMessage({
-      type: 'LR_CACHED_TRANSLATE',
+      type: 'LG_CACHED_TRANSLATE',
       text: word,
       fromLang: L2 || settings.L2,
       toLang: settings.L1
     });
 
     if (resp && resp.ok) {
-      transPopup.querySelector('#lr-popup-loading').style.display = 'none';
-      transPopup.querySelector('#lr-popup-translation').textContent = resp.result || '—';
+      transPopup.querySelector('#lg-popup-loading').style.display = 'none';
+      transPopup.querySelector('#lg-popup-translation').textContent = resp.result || '—';
       popupState.translation = resp.result || '';
     } else {
-      transPopup.querySelector('#lr-popup-loading').style.display = 'none';
-      transPopup.querySelector('#lr-popup-translation').textContent = '⚠️ Translation unavailable';
+      transPopup.querySelector('#lg-popup-loading').style.display = 'none';
+      transPopup.querySelector('#lg-popup-translation').textContent = '⚠️ Translation unavailable';
     }
   }
 
   function closeTransPopup() {
-    if (transPopup) transPopup.classList.add('lr-hidden');
+    if (transPopup) transPopup.classList.add('lg-hidden');
     popupState = {};
   }
 
@@ -448,8 +448,8 @@
       timestamp: popupState.timestamp,
       videoUrl: window.location.href
     };
-    await browser.runtime.sendMessage({ type: 'LR_ADD_WORD', entry });
-    const btn = document.getElementById('lr-save-word');
+    await browser.runtime.sendMessage({ type: 'LG_ADD_WORD', entry });
+    const btn = document.getElementById('lg-save-word');
     if (btn) {
       btn.textContent = '✅ Saved!';
       setTimeout(() => { btn.textContent = '💾 Save Word'; }, 1500);
@@ -469,53 +469,53 @@
   // ─── Settings Panel ─────────────────────────────────────────────────────────
   function buildSettingsPanel() {
     settingsPanel = document.createElement('div');
-    settingsPanel.id = 'lr-settings-panel';
-    settingsPanel.className = 'lr-hidden';
+    settingsPanel.id = 'lg-settings-panel';
+    settingsPanel.className = 'lg-hidden';
     settingsPanel.innerHTML = `
-      <div class="lr-panel-header">
-        <span>⚙️ Language Reactor Settings</span>
-        <button class="lr-btn lr-btn-sm" id="lr-close-settings">✕</button>
+      <div class="lg-panel-header">
+        <span>⚙️ LingoFlip Settings</span>
+        <button class="lg-btn lg-btn-sm" id="lg-close-settings">✕</button>
       </div>
-      <div class="lr-settings-body">
-        <div class="lr-form-group">
+      <div class="lg-settings-body">
+        <div class="lg-form-group">
           <label>Native Language (L1)</label>
-          <select id="lr-setting-L1"></select>
+          <select id="lg-setting-L1"></select>
         </div>
-        <div class="lr-form-group">
+        <div class="lg-form-group">
           <label>Learning Language (L2)</label>
-          <select id="lr-setting-L2"></select>
+          <select id="lg-setting-L2"></select>
         </div>
-        <div class="lr-form-group">
-          <label>Font Size: <span id="lr-size-val">${settings.fontSize || 20}px</span></label>
-          <input type="range" id="lr-setting-fontSize" min="12" max="36" value="${settings.fontSize || 20}" />
+        <div class="lg-form-group">
+          <label>Font Size: <span id="lg-size-val">${settings.fontSize || 20}px</span></label>
+          <input type="range" id="lg-setting-fontSize" min="12" max="36" value="${settings.fontSize || 20}" />
         </div>
-        <div class="lr-form-group">
+        <div class="lg-form-group">
           <label>Subtitle Color</label>
-          <input type="color" id="lr-setting-fontColor" value="${settings.fontColor || '#FFFFFF'}" />
+          <input type="color" id="lg-setting-fontColor" value="${settings.fontColor || '#FFFFFF'}" />
         </div>
-        <div class="lr-form-group">
-          <label>Background Opacity: <span id="lr-opacity-val">${((settings.bgOpacity ?? 0.75)*100).toFixed(0)}%</span></label>
-          <input type="range" id="lr-setting-bgOpacity" min="0.1" max="1" step="0.05" value="${settings.bgOpacity ?? 0.75}" />
+        <div class="lg-form-group">
+          <label>Background Opacity: <span id="lg-opacity-val">${((settings.bgOpacity ?? 0.75)*100).toFixed(0)}%</span></label>
+          <input type="range" id="lg-setting-bgOpacity" min="0.1" max="1" step="0.05" value="${settings.bgOpacity ?? 0.75}" />
         </div>
-        <div class="lr-form-group">
+        <div class="lg-form-group">
           <label>Position</label>
-          <select id="lr-setting-position">
+          <select id="lg-setting-position">
             <option value="bottom">Bottom</option>
             <option value="top">Top</option>
           </select>
         </div>
-        <div class="lr-form-group">
+        <div class="lg-form-group">
           <label>Enable Sites</label>
-          <div class="lr-checkboxes">
-            <label><input type="checkbox" id="lr-site-youtube" /> YouTube</label>
-            <label><input type="checkbox" id="lr-site-netflix" /> Netflix</label>
-            <label><input type="checkbox" id="lr-site-udemy" /> Udemy</label>
-            <label><input type="checkbox" id="lr-site-babbel" /> Babbel</label>
+          <div class="lg-checkboxes">
+            <label><input type="checkbox" id="lg-site-youtube" /> YouTube</label>
+            <label><input type="checkbox" id="lg-site-netflix" /> Netflix</label>
+            <label><input type="checkbox" id="lg-site-udemy" /> Udemy</label>
+            <label><input type="checkbox" id="lg-site-babbel" /> Babbel</label>
           </div>
         </div>
-        <div class="lr-form-actions">
-          <button class="lr-btn" id="lr-save-settings">Save Settings</button>
-          <button class="lr-btn" id="lr-reset-settings">Reset Defaults</button>
+        <div class="lg-form-actions">
+          <button class="lg-btn" id="lg-save-settings">Save Settings</button>
+          <button class="lg-btn" id="lg-reset-settings">Reset Defaults</button>
         </div>
       </div>
     `;
@@ -528,8 +528,8 @@
       ['pl','Polish'],['sv','Swedish'],['tr','Turkish'],['hi','Hindi']
     ];
 
-    const L1 = document.getElementById('lr-setting-L1');
-    const L2 = document.getElementById('lr-setting-L2');
+    const L1 = document.getElementById('lg-setting-L1');
+    const L2 = document.getElementById('lg-setting-L2');
     LANGUAGES.forEach(([code, name]) => {
       L1.append(new Option(name, code));
       L2.append(new Option(name, code));
@@ -538,64 +538,64 @@
     L2.value = settings.L2 || 'es';
 
     // Site checkboxes
-    const siteMap = { 'lr-site-youtube': 'youtube', 'lr-site-netflix': 'netflix',
-                       'lr-site-udemy': 'udemy', 'lr-site-babbel': 'babbel' };
+    const siteMap = { 'lg-site-youtube': 'youtube', 'lg-site-netflix': 'netflix',
+                       'lg-site-udemy': 'udemy', 'lg-site-babbel': 'babbel' };
     Object.entries(siteMap).forEach(([id, key]) => {
       const el = document.getElementById(id);
       if (el) el.checked = settings.enabledSites?.[key] ?? false;
     });
 
-    document.getElementById('lr-setting-position').value = settings.position || 'bottom';
+    document.getElementById('lg-setting-position').value = settings.position || 'bottom';
 
     // Range inputs
-    document.getElementById('lr-setting-fontSize').addEventListener('input', (e) => {
-      document.getElementById('lr-size-val').textContent = e.target.value + 'px';
+    document.getElementById('lg-setting-fontSize').addEventListener('input', (e) => {
+      document.getElementById('lg-size-val').textContent = e.target.value + 'px';
     });
-    document.getElementById('lr-setting-bgOpacity').addEventListener('input', (e) => {
-      document.getElementById('lr-opacity-val').textContent = (e.target.value * 100).toFixed(0) + '%';
-    });
-
-    settingsPanel.querySelector('#lr-close-settings').addEventListener('click', () => {
-      settingsPanel.classList.add('lr-hidden');
+    document.getElementById('lg-setting-bgOpacity').addEventListener('input', (e) => {
+      document.getElementById('lg-opacity-val').textContent = (e.target.value * 100).toFixed(0) + '%';
     });
 
-    document.getElementById('lr-save-settings').addEventListener('click', async () => {
+    settingsPanel.querySelector('#lg-close-settings').addEventListener('click', () => {
+      settingsPanel.classList.add('lg-hidden');
+    });
+
+    document.getElementById('lg-save-settings').addEventListener('click', async () => {
       const newSettings = {
         L1: L1.value,
         L2: L2.value,
-        fontSize: parseInt(document.getElementById('lr-setting-fontSize').value),
-        fontColor: document.getElementById('lr-setting-fontColor').value,
-        bgOpacity: parseFloat(document.getElementById('lr-setting-bgOpacity').value),
-        position: document.getElementById('lr-setting-position').value,
+        fontSize: parseInt(document.getElementById('lg-setting-fontSize').value),
+        fontColor: document.getElementById('lg-setting-fontColor').value,
+        bgOpacity: parseFloat(document.getElementById('lg-setting-bgOpacity').value),
+        position: document.getElementById('lg-setting-position').value,
         enabledSites: {
-          youtube: document.getElementById('lr-site-youtube').checked,
-          netflix: document.getElementById('lr-site-netflix').checked,
-          udemy:  document.getElementById('lr-site-udemy').checked,
-          babbel: document.getElementById('lr-site-babbel').checked
+          youtube: document.getElementById('lg-site-youtube').checked,
+          netflix: document.getElementById('lg-site-netflix').checked,
+          udemy:  document.getElementById('lg-site-udemy').checked,
+          babbel: document.getElementById('lg-site-babbel').checked
         }
       };
-      await browser.runtime.sendMessage({ type: 'LR_SAVE_SETTINGS', settings: newSettings });
+      await browser.runtime.sendMessage({ type: 'LG_SAVE_SETTINGS', settings: newSettings });
       settings = newSettings;
       applySubStyle(subPanel);
-      settingsPanel.classList.add('lr-hidden');
+      settingsPanel.classList.add('lg-hidden');
     });
 
-    document.getElementById('lr-reset-settings').addEventListener('click', () => {
+    document.getElementById('lg-reset-settings').addEventListener('click', () => {
       L1.value = 'en'; L2.value = 'es';
-      document.getElementById('lr-setting-fontSize').value = 20;
-      document.getElementById('lr-size-val').textContent = '20px';
-      document.getElementById('lr-setting-fontColor').value = '#FFFFFF';
-      document.getElementById('lr-setting-bgOpacity').value = 0.75;
-      document.getElementById('lr-opacity-val').textContent = '75%';
-      document.getElementById('lr-setting-position').value = 'bottom';
+      document.getElementById('lg-setting-fontSize').value = 20;
+      document.getElementById('lg-size-val').textContent = '20px';
+      document.getElementById('lg-setting-fontColor').value = '#FFFFFF';
+      document.getElementById('lg-setting-bgOpacity').value = 0.75;
+      document.getElementById('lg-opacity-val').textContent = '75%';
+      document.getElementById('lg-setting-position').value = 'bottom';
       Object.keys(siteMap).forEach(id => { const el = document.getElementById(id); if(el) el.checked = false; });
-      document.getElementById('lr-site-youtube').checked = true;
+      document.getElementById('lg-site-youtube').checked = true;
     });
   }
 
   function toggleSettingsPanel() {
     if (!settingsPanel) return;
-    settingsPanel.classList.toggle('lr-hidden');
+    settingsPanel.classList.toggle('lg-hidden');
   }
 
   // ─── Word Click Handler ──────────────────────────────────────────────────────
@@ -603,7 +603,7 @@
     if (!isEnabled) return;
     // Only handle clicks on subtitle panel text
     const target = e.target;
-    if (!target.classList.contains('lr-sub-text')) return;
+    if (!target.classList.contains('lg-sub-text')) return;
     if (target.tagName !== 'SPAN') return;
 
     const text = target.innerText.trim();
@@ -635,16 +635,16 @@
   // ─── Message Handler ─────────────────────────────────────────────────────────
   function onMessage(msg) {
     switch (msg.type) {
-      case 'LR_LOOKUP':
+      case 'LG_LOOKUP':
         showTransPopup(msg.text, '', msg.screenX || 200, msg.screenY || 300);
         break;
-      case 'LR_TOGGLE_VOCAB':
+      case 'LG_TOGGLE_VOCAB':
         toggleVocabPanel();
         break;
-      case 'LR_OPEN_SETTINGS':
+      case 'LG_OPEN_SETTINGS':
         toggleSettingsPanel();
         break;
-      case 'LR_SET_ENABLED':
+      case 'LG_SET_ENABLED':
         isEnabled = msg.enabled;
         if (subPanel) subPanel.style.display = isEnabled ? '' : 'none';
         break;

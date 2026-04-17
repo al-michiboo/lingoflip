@@ -1,7 +1,7 @@
 {
-  "extensionName": { "message": "Language Reactor", "description": "Name of the extension." },
+  "extensionName": { "message": "LingoFlip", "description": "Name of the extension." },
   "extensionDescription": {
-    "message": "Learn languages from streaming videos with dual subtitles, word lookup, and vocabulary building.",
+    "message": "Learn languages from streaming videos — dual subtitles, word lookup, and vocabulary builder.",
     "description": "Extension description."
   }
 }

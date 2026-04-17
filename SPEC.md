@@ -1,9 +1,9 @@
-# Language Reactor — Firefox Web Extension
+# LingoFlip — Firefox Web Extension
 
 ## 1. Project Overview
 
 **Type:** Firefox Web Extension (Manifest V2 — MV2)
-**Summary:** A language learning companion that displays dual subtitles on streaming video platforms, saves vocabulary, and provides one-click translations. Inspired by Language Reactor (formerly Language Learning with YouTube).
+**Summary:** A language learning companion that displays dual subtitles on streaming video platforms, saves vocabulary, and provides one-click translations. Inspired by LingoFlip (formerly Language Learning with YouTube).
 **Target Users:** Language learners watching foreign-language video content.
 
 ---
@@ -59,7 +59,7 @@
 ```json
 {
   "manifest_version": 2,
-  "name": "Language Reactor",
+  "name": "LingoFlip",
   "version": "1.0.0",
   "description": "Learn languages from streaming videos with dual subtitles and vocabulary builder",
   "permissions": ["activeTab", "storage", "contextMenus", "webNavigation"],
@@ -75,7 +75,7 @@
 
 ### 3.2 Files
 ```
-language-reactor-ext/
+lingoflip-ext/
 ├── manifest.json
 ├── background.js        # Handles context menus, storage, translation API calls
 ├── content.js           # Injected into video pages — subtitle parsing & display
@@ -142,7 +142,7 @@ npm test      # run jest tests
 ---
 
 ## 5. GitHub Integration
-- Initialize git repo at `/workspace/language-reactor-ext`
+- Initialize git repo at `/workspace/lingoflip-ext`
 - Push to GitHub: user creates a repo, then add remote and push.
 - Note: Extension ID will change after signing — mention this in README.
 

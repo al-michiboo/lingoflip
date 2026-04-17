@@ -1,4 +1,4 @@
-# 🌐 Language Reactor — Firefox Extension
+# 🌐 LingoFlip — Firefox Extension
 
 > Dual subtitles, one-click word lookup, and vocabulary building — for YouTube, Netflix, and more.
 
@@ -32,7 +32,7 @@
 - Import/Export settings
 
 ### 🖱️ Right-Click Lookup
-- Select any text on any page → "Look up with Language Reactor"
+- Select any text on any page → "Look up with LingoFlip"
 - Opens the translation popup directly in context
 
 ---
@@ -55,8 +55,8 @@ Since this extension is not yet submitted to AMO, you can load it temporarily:
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/language-reactor.git
-   cd language-reactor
+   git clone https://github.com/YOUR_USERNAME/lingoflip.git
+   cd lingoflip
    ```
 2. Sign the extension at [addons.mozilla.org](https://addons.mozilla.org/developers/)
 3. Download the `.xpi` after approval
@@ -78,7 +78,7 @@ Coverage report will be printed to stdout. Target: >60% on all metrics.
 ## 📁 File Structure
 
 ```
-language-reactor/
+lingoflip/
 ├── manifest.json        # Extension manifest (MV2)
 ├── background.js         # Service worker — menus, storage, API proxy
 ├── content.js            # Injected into video pages
@@ -105,7 +105,7 @@ language-reactor/
 |---|---|
 | `activeTab` | Access current tab for settings and vocab toggling |
 | `storage` | Persist settings, vocabulary, and translation cache |
-| `contextMenus` | Right-click "Look up with Language Reactor" |
+| `contextMenus` | Right-click "Look up with LingoFlip" |
 | `webNavigation` | Detect page transitions on supported sites |
 | `*://*.youtube.com/*` etc. | Content script injection on video sites |
 | `https://api.mymemory.translated.net/*` | Free translation API calls |
@@ -125,7 +125,7 @@ English, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean
 npm run test:watch
 
 # Re-sign when editing:
-# 1. zip -r language-reactor.zip manifest.json background.js content.js content.css popup.html popup.js settings.js icons/ _locales/
+# 1. zip -r lingoflip.zip manifest.json background.js content.js content.css popup.html popup.js settings.js icons/ _locales/
 # 2. Upload at https://addons.mozilla.org/developers/
 ```
 
